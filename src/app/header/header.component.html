@@ -1,5 +1,5 @@
 <p>
-    <mat-toolbar color="accent">
+    <mat-toolbar class="headerbar">
         <button
         mat-icon-button
         class="example-icon"
@@ -7,6 +7,10 @@
         >
         <mat-icon>menu</mat-icon>
     </button>
-    <span>My Apllication</span>
+    <span class="title">My Apllication</span>
+
+    <button mat-icon-button (click)="logout()" class="logout-button">
+        <mat-icon class="logout-icon">logout</mat-icon>
+    </button>
     </mat-toolbar>
 </p>

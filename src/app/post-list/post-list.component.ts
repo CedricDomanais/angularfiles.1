@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -12,12 +15,19 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class PostListComponent implements OnInit {
   postForm: FormGroup
   posts: Post[] = [];
+  
   defaultImageUrl: any;
   postBeingEdited: Post | null = null; // Add this property to track the post being edited
   imageUrlToPreview = '';
 imageUrl: any;
+currentPageUrl: string = ''; // Add a new property for the current page URL
 
-  constructor(private postService: PostService) {
+
+currentPage = 1;
+postsPerPage = 5;
+totalPages = 0;
+
+  constructor(private postService: PostService, private cdr: ChangeDetectorRef,public router:Router) {
     this.postForm = new FormGroup({
       id: new FormControl(''),
       title: new FormControl(''),
@@ -28,18 +38,24 @@ imageUrl: any;
   }
 
   ngOnInit() {
-    this.postService.fetchPosts()
+    this.postService.fetchPosts();
     this.postService.getPostUpdateListener().subscribe(posts => {
-      console.log(posts)
-      this.posts = posts;
+       console.log(posts);
+       this.posts = posts;
+       this.calculateTotalPages(); // Recalculate total pages after posts are updated
+       console.log('Total Pages:', this.totalPages);
+       console.log('Page Numbers:', this.getPageNumbers());
+       this.cdr.detectChanges(); // Manually trigger change detection
+
     });
+   
     this.postForm = new FormGroup({
-      id: new FormControl(''),
-      title: new FormControl(''),
-      content: new FormControl(''),
-      imageUrl: new FormControl('')
+       id: new FormControl(''),
+       title: new FormControl(''),
+       content: new FormControl(''),
+       imageUrl: new FormControl('')
     });
-  }
+   }
   handleImageError(event: any) {
     // Check if the error is due to a missing or invalid image URL
     if (event.target.src === '' || event.target.src === this.defaultImageUrl) {
@@ -105,4 +121,32 @@ imageUrl: any;
   });
  }
  
+
+ calculateTotalPages() {
+  console.log('Posts:', this.posts);
+  console.log('Posts per page:', this.postsPerPage);
+  this.totalPages = Math.ceil(this.posts.length / this.postsPerPage);
+  console.log('Total Pages:', this.totalPages);
+ }
+getPostsForCurrentPage() {
+  const startIndex = (this.currentPage - 1) * this.postsPerPage;
+  const endIndex = startIndex + this.postsPerPage;
+  return this.posts.slice(startIndex, endIndex);
 }
+
+changePage(pageNumber: number) {
+  this.currentPage = pageNumber;
+  this.router.navigate(['/create', pageNumber]);
+}
+
+
+ 
+  getPageNumbers() {
+     const pageNumbers: number[] = [];
+     for (let i = 1; i <= this.totalPages; i++) {
+       pageNumbers.push(i);
+     }
+     return pageNumbers;
+  }
+ }
+

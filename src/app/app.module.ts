@@ -15,7 +15,9 @@ import { MatCardModule } from '@angular/material/card';
 import { HeaderComponent } from './header/header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
+import { AuthComponent } from './auth/auth.component'; 
+import { AppRoutingModule } from './app-routing.module';
 
 
 
@@ -25,7 +27,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     PostListComponent, 
     PostCreateComponent,
-    HeaderComponent   
+    HeaderComponent,
+    AuthComponent   
   ],
   imports: [
     BrowserModule,
@@ -39,6 +42,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatExpansionModule,
     HttpClientModule,
     ReactiveFormsModule,
+    AppRoutingModule
     
   ],
   providers: [],
